@@ -1,0 +1,109 @@
+<link rel="import" href="sharedStyles.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-cat-big" attributes="cat buttontype buttontext">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <div class="col s5 offset-s1">
+            <img src="{{cat.picture}}">
+          </div>
+          <div class="col s4 offset-s1">
+            <h1>{{cat.name}}</h1>
+            <table class="striped">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Age</td>
+                  <td>{{cat.age}} years old</td>
+                </tr>
+                <tr>
+                  <td>Color</td>
+                  <td>{{cat.color}}</td>
+                </tr>
+                <tr>
+                  <td>Size</td>
+                  <td>{{cat.size}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="orange-text right-align">
+              <a id="add" class="btn-large waves-effect waves-light red right"><i class="material-icons left">{{buttontype}}</i>{{buttontext}}</a>
+              <span class="right" style="font-size: 2.5em; margin-right: 1em;">${{cat.price}}</span>
+              <a id="back" class="btn-large waves-effect waves-light blue right"><i class="material-icons left">arrow_back</i>Main page</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCatBig extends Polymer.Element {
+    static get is() { return 'mockup-cat-big'; }
+    
+    static get properties() {
+      return {
+        cat: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        buttontype: {
+          type: String,
+          value: function() {
+            return 'add';
+          }
+        },
+        buttontext: {
+          type: String,
+          value: function() {
+            return 'Add to cart';
+          }
+        }
+      };
+    }
+    
+    constructor() {
+      super();
+    }
+    
+    ready() {
+      super.ready();
+      this.$.add.addEventListener('click', e => this.onAddClick(e));
+      this.addEventListener('add-to-cart', e => addBigToCart(e));
+      this.addEventListener('remove-from-cart', e => removeBigFromCart(e));
+      this.$.back.addEventListener('click', e => backToMainPage(e));
+    }
+    
+    onAddClick() {
+      var eventtype = this.__data.buttontype === 'add' ? 'add-to-cart' : 'remove-from-cart';
+      
+      this.dispatchEvent(new CustomEvent(
+        eventtype,
+        {
+          detail: {
+            cat: this.__data.cat
+          }
+        }
+      ));
+    }
+  }
+  customElements.define(MockupCatBig.is, MockupCatBig);
+</script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../js/materialize.js"></script>
+<script src="../js/init.js"></script>

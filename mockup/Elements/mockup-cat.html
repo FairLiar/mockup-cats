@@ -1,0 +1,94 @@
+<link rel="import" href="sharedStyles.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-cat" attributes="cat buttontext">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="card horizontal  hoverable grey lighten-4">
+      <div class="card-image waves-effect waves-block waves-light">
+        <a id="details"><img src="{{getProperty(cat, 'picture')}}"></a>
+      </div>
+      <div class="card-stacked">
+        <div class="card-content" style="position: relative;">
+          <a id="add" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">{{buttontext}}</i></a>
+          <a href="#detail-page" class="card-title">{{getProperty(cat, 'name')}}</span></a>
+          <p>{{getProperty(cat, 'age')}} years old</p>
+          <p>{{getProperty(cat, 'color')}}</p>
+        </div>
+        <div class="card-action">
+          <span class="orange-text">${{getProperty(cat, 'price')}}</span>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCat extends Polymer.Element {
+    static get is() { return 'mockup-cat'; }
+    
+    static get properties() {
+      return {
+        cat: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        
+        buttontext: {
+          type: String,
+          value: function() { return 'add'; }
+        }
+      }
+    }
+    
+    getProperty(cat, title) {
+      return JSON.parse(cat)[title];
+    }
+    
+    constructor() {
+      super();
+    }
+    
+    ready() {
+      super.ready();
+      this.$.add.addEventListener('click', e => this.addCatToCart(e));
+      this.addEventListener('add-cat', e => addCatToCart(e));
+      this.addEventListener('remove-cat', e => removeCatFromCart(e));
+      this.$.details.addEventListener('click', e => this.showDetails(e));
+      this.addEventListener('show-details', e => showDetails(e));
+    }
+    
+    addCatToCart() {
+      if (this.$.add.innerText === 'add')
+        this.sendData('add-cat');
+      else
+        this.sendData('remove-cat');
+    }
+    
+    showDetails() {
+      this.sendData('show-details');
+    }
+    
+    sendData(eventName) {
+      this.dispatchEvent(new CustomEvent(
+        eventName,
+        {
+          detail: {
+            cat: JSON.parse(this.__data.cat),
+            button: this.$.add
+          }
+        }
+      ));
+    }
+  }
+  customElements.define(MockupCat.is, MockupCat);
+</script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../js/materialize.js"></script>
+<script src="../js/init.js"></script>

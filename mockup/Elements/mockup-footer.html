@@ -1,0 +1,25 @@
+<link rel="import" href="sharedStyles.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-footer">
+  <template>
+    <style include="shared-styles"></style>
+    <footer class="page-footer orange">
+      <div class="footer-copyright">
+        <div class="container">
+        Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+        </div>
+      </div>
+    </footer>
+  </template>
+</dom-module>
+
+<script>
+  class MockupFooter extends Polymer.Element {
+    static get is() { return 'mockup-footer'; }
+  }
+  customElements.define(MockupFooter.is, MockupFooter);
+</script>

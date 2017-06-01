@@ -1,0 +1,63 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<link rel="import" href="mockup-cat.html">
+
+<dom-module id="mockup-cart" attributes="cats">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="container">
+      <div class="row">
+        <ul>
+          <dom-repeat items="{{cats}}">
+            <template>
+              <li class="col s4">
+                <mockup-cat cat={{stringify(item)}} buttontext="remove">
+                </mockup-cat>
+              </li>
+            </template>
+          </dom-repeat>
+        </ul>
+      </div>
+      <div class="row">
+        <a id="back" class="btn-large waves-effect waves-light blue right"><i class="material-icons left">arrow_back</i>Main page</a>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCart extends Polymer.Element {
+    static get is() { return 'mockup-cart'; }
+    
+    static get properties() {
+      return {
+        cats: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        }
+      };
+    }
+    
+    constructor() {
+      super();
+    }
+    
+    ready() {
+      super.ready();
+      this.$.back.addEventListener('click', e => backToMainPage(e));
+    }
+    
+    stringify(item) {
+      return JSON.stringify(item);
+    }
+  }
+  customElements.define(MockupCart.is, MockupCart);
+</script>

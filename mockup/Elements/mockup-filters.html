@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="sharedStyles.html">
+
+<link rel="import" href="Filters/price-range-filter.html">
+<link rel="import" href="Filters/age-range-filter.html">
+<link rel="import" href="Filters/only-kittens-filter.html">
+<link rel="import" href="Filters/size-filter.html">
+<link rel="import" href="Filters/color-filter.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-filters">
+  <template>
+    <style include="shared-styles"></style>
+    <ul class="collection z-depth-1">
+      <li class="collection-item">
+        <price-range-filter id="priceFilter"></price-range-filter>
+      </li>               
+      <li class="collection-item">
+        <age-range-filter id="ageFilter"></age-range-filter>
+      </li>
+      <li class="collection-item">
+        <only-kittens-filter id="onlyKittensFilter"></only-kittens-filter>
+      </li>
+      <li class="collection-item">
+        <size-filter id="sizeFilter"></size-filter>
+      </li>
+      <li class="collection-item">
+        <color-filter id="colorFilter"></color-filter>
+      </li>
+      <li class="collection-item center-align">
+        <paper-button style="width: 100%" id="apply">Apply filters</paper-button>
+      </li>
+    </ul>
+  </template>
+</dom-module>
+
+<script>
+  class MockupFilters extends Polymer.Element {
+    static get is() { return 'mockup-filters'; }
+    
+    constructor() {
+      super();
+    }
+    
+    connectedCallback() {
+      super.connectedCallback();
+    }
+    
+    ready() {
+      super.ready();
+      this.$.apply.addEventListener('click', e => this.applyFilters(e));
+      this.addEventListener('apply-filters', e => filterContent(e));
+    }
+    
+    applyFilters() { 
+      this.dispatchEvent(new CustomEvent(
+        'apply-filters',
+        {
+          detail: {
+            price: this.$.priceFilter.getPriceRange(),
+            age: this.$.ageFilter.getAgeRange(),
+            onlyKittens: this.$.onlyKittensFilter.areOnlyKittens(),
+            size: this.$.sizeFilter.getSize(),
+            color: this.$.colorFilter.getColor()
+          }
+        }));
+    }
+  }
+  customElements.define(MockupFilters.is, MockupFilters);
+</script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../js/materialize.js"></script>
+<script src="../js/init.js"></script>
