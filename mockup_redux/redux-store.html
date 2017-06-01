@@ -1,0 +1,165 @@
+<link rel="import" href="bower_components/polymer-redux/polymer-redux.html">
+
+<script>
+  const initialState = {
+    cats: [
+      {
+        id: 1,
+        picture: "Resources/Pictures/Cat_1.png",
+        bigPicture: "Resources/Pictures/Cat_1_520.png",
+        name: "Margo",
+        age: "5",
+        color: "White",
+        price: "50",
+        isKitten: false,
+        size: 'medium',
+        isInCart: false
+      },
+      {
+        id: 2,
+        picture: "Resources/Pictures/Cat_2.png",
+        bigPicture: "Resources/Pictures/Cat_2_520.png",
+        name: "Vaksa",
+        age: "10",
+        color: "Gray",
+        price: "20",
+        isKitten: false,
+        size: 'medium',
+        isInCart: false
+      },
+      {
+        id: 3,
+        picture: "Resources/Pictures/Cat_3.png",
+        bigPicture: "Resources/Pictures/Cat_3_520.png",
+        name: "Mr Wiggles",
+        age: "12",
+        color: "Red",
+        price: "35",
+        isKitten: false,
+        size: 'large',
+        isInCart: false
+      },
+      {
+        id: 4,
+        picture: "Resources/Pictures/Cat_4.png",
+        bigPicture: "Resources/Pictures/Cat_4_520.png",
+        name: "Boris",
+        age: "1",
+        color: "Gray",
+        price: "50",
+        isKitten: true,
+        size: 'small',
+        isInCart: false
+      }
+    ],
+    cart: [],
+    sum: 0,
+    details: {}
+  };
+  
+  const reducer = (state, action) => {
+    if (!state) return initialState;
+    switch (action.type) {
+      case 'ADD_TO_CART':
+        var cart = state.cart.map(function(cat) { return copyCat(cat); });
+        var sum = Number(state.sum);
+        var newCat = copyCat(action.cat);
+        newCat.isInCart = true;
+        cart.push(newCat);
+        sum += Number(action.cat.price);
+        
+        var cats = state.cats.map(function(cat) { return copyCat(cat); });
+        cats = cats.map(function(cat) {
+          if (cat.id === action.cat.id) {
+            cat.isInCart = true;
+          }
+          return cat;
+        });
+        
+        if (state.details) {
+          var details = copyCat(state.details);
+          details.isInCart = true;
+        }
+        
+        return Object.assign({}, state, { cart: cart, sum: sum, cats: cats, details: details });
+      case 'REMOVE_FROM_CART':
+        var cart = state.cart.map(function(cat) { return copyCat(cat); });
+        var sum = Number(state.sum);
+        cart = cart.filter(function(cat) { 
+          return cat.id !== action.cat.id;
+        });
+        sum -= Number(action.cat.price);
+        
+        var cats = state.cats.map(function(cat) { return copyCat(cat); });
+        cats = cats.map(function(cat) {
+          if (cat.id === action.cat.id) {
+            cat.isInCart = false;
+          }
+          return cat;
+        });
+        
+        if (state.details) {
+          var details = copyCat(state.details);
+          details.isInCart = false;
+        }
+        
+        return Object.assign({}, state, { cart: cart, sum: sum, cats: cats, details: details });
+      case 'APPLY_FILTERS':
+        var filtered = initialState.cats.filter(function(cat) {
+          return isInFilter(cat, action);
+        });
+        
+        if (filtered.length === 0) {
+          alert('No items match your filter!');
+          return Object.assign({}, state, { cats: initialState.cats });
+        }
+        else {
+          return Object.assign({}, state, { cats: filtered, cart: [], sum: 0 });
+        }
+      case 'OPEN_CART':
+        var header = document.getElementById('header');
+        var cart = document.createElement('mockup-cart');
+        document.body.replaceChild(cart, header.nextElementSibling);
+        return state;
+      case 'OPEN_BIG_CAT':
+        var header = document.getElementById('header');
+        var bigCat = document.createElement('mockup-cat-big');
+        document.body.replaceChild(bigCat, header.nextElementSibling);
+        return Object.assign({}, state, { details: action.cat });
+      case 'RETURN_TO_MAIN_PAGE':
+        var header = document.getElementById('header');
+        var container = document.createElement('mockup-container');
+        document.body.replaceChild(container, header.nextElementSibling);
+        return Object.assign({}, state, { details: {} });
+    }
+  };
+  
+  function isInFilter(cat, action) {
+    function isFitPrice() {
+      return cat.price >= action.cat.price.from && cat.price <= action.cat.price.to;
+    }
+    
+    function isFitAge() {
+      return cat.age >= action.cat.age.from && cat.age <= action.cat.age.to;
+    }
+    
+    return  isFitPrice() && 
+            isFitAge() &&
+            action.cat.size[cat.size] &&
+            action.cat.color[cat.color] &&
+            (action.cat.onlyKittens ? cat.isKitten : true); 
+  }
+  
+  function copyCat(cat) {
+    var result = {};
+    for (var prop in cat) {
+      if (cat.hasOwnProperty(prop)) {
+        result[prop] = cat[prop];
+      }
+    }
+    return result;
+  }
+  
+  const store = Redux.createStore(reducer);
+  const ReduxBehavior = PolymerRedux(store);
+</script>

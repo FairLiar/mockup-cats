@@ -1,0 +1,73 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<link rel="import" href="mockup-cat.html">
+
+<dom-module id="mockup-cart">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="container">
+      <div class="row">
+        <ul>
+          <dom-repeat items="[[cart]]">
+            <template>
+              <li class="col s4">
+                <mockup-cat cat=[[item]]>
+                </mockup-cat>
+              </li>
+            </template>
+          </dom-repeat>
+        </ul>
+      </div>
+      <div class="row">
+        <a id="back" class="btn-large waves-effect waves-light blue right"><i class="material-icons left">arrow_back</i>Main page</a>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCart extends ReduxBehavior(Polymer.Element) {
+    static get is() { return 'mockup-cart'; }
+    
+    ready() {
+      super.ready();
+      this.$.back.addEventListener('click', e => this.backToMainPage(e));
+    }
+    
+    connectedCallback() {
+      super.connectedCallback();
+      const state = this.getState();
+    }
+    
+    static get properties() {
+      return {
+        cart: {
+          type: Array,
+          statePath: 'cart'
+        }
+      };
+    }
+    
+    static get actions() {
+      return {
+        backToMain() {
+          return {
+            type: 'RETURN_TO_MAIN_PAGE'
+          }
+        }
+      }
+    }
+    
+    backToMainPage() {
+      return this.dispatch('backToMain');
+    }
+  }
+  customElements.define(MockupCart.is, MockupCart);
+</script>

@@ -1,0 +1,22 @@
+{
+  "name": "mockup_redux",
+  "description": "",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer-redux": "polymer-2"
+  },
+  "resolutions": {
+    "polymer-redux": "polymer-2",
+    "polymer": "^2.0.0-rc.3",
+    "webcomponentsjs": "^v1.0.0"
+  }
+}

@@ -1,0 +1,36 @@
+<link rel="import" href="../sharedStyles.html">
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="age-range-filter">
+  <template>
+    <style include="shared-styles"></style>
+    <p>Age:</p>
+    <div class="row" style="margin-bottom: 0">
+      <div class="input-field col s6">
+        <paper-input id="ageFrom" type="number" placeholder="0" label="From"></paper-input>
+      </div>
+      <div class="input-field col s6">
+        <paper-input id="ageTo" type="number" placeholder="20" label="To"></paper-input>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class AgeRangeFilter extends Polymer.Element {
+    static get is() {
+      return 'age-range-filter';
+    }
+    
+    getAgeRange() {
+      return {
+        from: this.$.ageFrom.value == '0' ? 0 : 
+                Number(this.$.ageFrom.value) || Number(this.$.ageFrom.placeholder),
+        to: this.$.ageTo.value == '0' ? 0 : 
+                Number(this.$.ageTo.value) || Number(this.$.ageTo.placeholder)
+      }
+    }
+  }
+  customElements.define(AgeRangeFilter.is, AgeRangeFilter);
+</script>

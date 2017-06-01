@@ -1,0 +1,48 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<link rel="import" href="mockup-cat.html">
+
+<dom-module id="mockup-catalog">
+  <template>
+    <style include="shared-styles"></style>
+    <div class="row">
+      <ul>
+        <dom-repeat items="[[cats]]">
+          <template>
+            <li class="col s6">
+              <mockup-cat cat=[[item]]>
+              </mockup-cat>
+            </li>
+          </template>
+        </dom-repeat>
+      </ul>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCatalog extends ReduxBehavior(Polymer.Element) {
+    static get is() { return 'mockup-catalog'; }
+    
+    connectedCallback() {
+      super.connectedCallback();
+      const state = this.getState();
+    }
+    
+    static get properties() {
+      return {
+        cats: {
+          type: Array,
+          statePath: 'cats'
+        }
+      }
+    }
+  }
+  customElements.define(MockupCatalog.is, MockupCatalog);
+</script>

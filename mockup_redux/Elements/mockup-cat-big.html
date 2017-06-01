@@ -1,0 +1,134 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-cat-big">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <div class="col s5 offset-s1">
+            <img src="[[cat.bigPicture]]">
+          </div>
+          <div class="col s4 offset-s1">
+            <h1>[[cat.name]]</h1>
+            <table class="striped">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Age</td>
+                  <td>[[cat.age]] years old</td>
+                </tr>
+                <tr>
+                  <td>Color</td>
+                  <td>[[cat.color]]</td>
+                </tr>
+                <tr>
+                  <td>Size</td>
+                  <td>[[cat.size]]</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="orange-text right-align">
+              <a id="add" class="btn-large waves-effect waves-light red right">
+                <i class="material-icons left">[[buttonType]]</i>[[buttonText]]
+              </a>
+              <span class="right" style="font-size: 2.5em; margin-right: 1em;">${{cat.price}}</span>
+              <a id="back" class="btn-large waves-effect waves-light blue right">
+                <i class="material-icons left">arrow_back</i>Main page
+                </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCatBig extends ReduxBehavior(Polymer.Element) {
+    static get is() { return 'mockup-cat-big'; }
+    
+    ready() {
+      super.ready();
+      this.$.add.addEventListener('click', e => this.onAddClick(e));
+      this.$.back.addEventListener('click', e => this.backToMainPage(e));
+    }
+    
+    connectedCallback() {
+      super.connectedCallback();
+      const state = this.getState();
+    }
+    
+    static get properties() {
+      return {
+        cat: {
+          type: Object,
+          statePath: 'details'
+        },
+        buttonType: {
+          type: String,
+          computed: 'getButtonType(cat.isInCart)'
+        },
+        buttonText: {
+          type: String,
+          computed: 'getButtonText(cat.isInCart)'
+        }
+      }
+    }
+    
+    static get actions() {
+      return {
+        addToCart(cat) {
+          return {
+            type: 'ADD_TO_CART',
+            cat: cat
+          }
+        },
+        removeFromCart(cat) {
+          return {
+            type: 'REMOVE_FROM_CART',
+            cat: cat
+          }
+        },
+        returnToMain() {
+          return {
+            type: 'RETURN_TO_MAIN_PAGE'
+          }
+        }
+      }
+    }
+    
+    onAddClick() {
+      var action = this.cat.isInCart ? 'removeFromCart' : 'addToCart';
+      return this.dispatch(action, this.cat);
+    }
+    
+    backToMainPage() {
+      return this.dispatch('returnToMain');
+    }
+    
+    getButtonType(isInCart) {
+      return isInCart ? 'remove' : 'add';
+    }
+    
+    getButtonText(isInCart) {
+      return isInCart ? 'remove from cart' : 'add to cart';
+    }
+  }
+  customElements.define(MockupCatBig.is, MockupCatBig);
+</script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../js/materialize.js"></script>
+<script src="../js/init.js"></script>

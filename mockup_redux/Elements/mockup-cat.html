@@ -1,0 +1,99 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-cat" attributes="cat">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+    <div class="card horizontal  hoverable grey lighten-4">
+      <div class="card-image waves-effect waves-block waves-light">
+        <a id="details"><img src="[[cat.picture]]"></a>
+      </div>
+      <div class="card-stacked">
+        <div class="card-content" style="position: relative;">
+          <a id="add" class="btn-floating halfway-fab waves-effect waves-light red">
+            <i class="material-icons">[[buttonType]]</i>
+          </a>
+          <a href="#detail-page" class="card-title">[[cat.name]]</span></a>
+          <p>[[cat.age]] years old</p>
+          <p>[[cat.color]]</p>
+        </div>
+        <div class="card-action">
+          <span class="orange-text">$[[cat.price]]</span>
+        </div>
+      </div>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  class MockupCat extends ReduxBehavior(Polymer.Element) {
+    static get is() { return 'mockup-cat'; }
+    
+    ready() {
+      super.ready();
+      this.$.add.addEventListener('click', e => this.addButtonClick(e));
+      this.$.details.addEventListener('click', e => this.showDetails(e));
+    }
+    
+    connectedCallback() {
+      super.connectedCallback();
+      const state = this.getState();
+    }
+    
+    static get properties() {
+      return {
+        cat: Object,
+        buttonType: {
+          type: String,
+          computed: 'setButtonType(cat.isInCart)'
+        }
+      }
+    }
+    
+    static get actions() {
+      return {
+        openBig(cat) {
+          return {
+            type: 'OPEN_BIG_CAT',
+            cat: cat
+          }
+        },
+        addToCart(cat) {
+          return {
+            type: 'ADD_TO_CART',
+            cat: cat
+          }
+        },
+        removeFromCart(cat) {
+          return {
+            type: 'REMOVE_FROM_CART',
+            cat: cat
+          }
+        }
+      }
+    }
+    
+    showDetails() {
+      return this.dispatch('openBig', this.cat);
+    }
+    
+    addButtonClick() {
+      var action = this.buttonType === 'add' ? 'addToCart' : 'removeFromCart';
+      return this.dispatch(action, this.cat);
+    }
+    
+    setButtonType(isInCart) {
+      return isInCart ? 'remove' : 'add';
+    }
+  }
+  customElements.define(MockupCat.is, MockupCat);
+</script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="../js/materialize.js"></script>
+<script src="../js/init.js"></script>

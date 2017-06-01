@@ -1,0 +1,76 @@
+<link rel="import" href="sharedStyles.html">
+<link rel="import" href="../redux-store.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<link href="../css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="../css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+<dom-module id="mockup-header">
+  <template>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style include="shared-styles"></style>
+      <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Cats For Everyone</a>
+          <ul class="right hide-on-med-and-down">
+            <li><a id="cart" href="#" class="waves-effect">
+                <i class="large material-icons left">shopping_cart</i>[[cartcounter]] ([[price]] $)
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  </template>
+</dom-module>
+
+<script>
+  class MockupHeader extends ReduxBehavior(Polymer.Element) {
+    static get is() { return 'mockup-header'; }
+    
+    ready() {
+      super.ready();
+      this.$.cart.addEventListener('click', e => this.openCart(e))
+    }
+    
+    connectedCallback() {
+      super.connectedCallback();
+      const state = this.getState();
+    }
+    
+    static get properties() {
+      return {
+        count: {
+          type: Number,
+          statePath: 'cart.length'
+        },
+        cartcounter: {
+          type: String,
+          computed: 'getCartCounter(count)' 
+        },
+        price: {
+          type: Number,
+          statePath: 'sum'
+        }
+      }
+    }
+    
+    static get actions() {
+      return {
+        openCart() {
+          return {
+            type: 'OPEN_CART'
+          }
+        }
+      }
+    }
+    
+    getCartCounter(count) {
+      return count ? count + ' items in the cart' : 'Cart is empty'
+    }
+    
+    openCart() {
+      return this.dispatch('openCart');
+    }
+  }
+  customElements.define(MockupHeader.is, MockupHeader);
+</script>
